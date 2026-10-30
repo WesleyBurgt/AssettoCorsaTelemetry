@@ -30,6 +30,16 @@ services:
       dockerfile: AssettoCorsaTelemetry.Listener/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "8082:8080"
+        
+  backend:
+    image: backend
+    build:
+      context: .
+      dockerfile: AssettoCorsaTelemetry.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
     ports:
       - "8080:8080"

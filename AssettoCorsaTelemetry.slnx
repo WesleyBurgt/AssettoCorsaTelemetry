@@ -2,7 +2,9 @@
   <Folder Name="/Solution Items/">
     <File Path="compose.yaml" />
   </Folder>
+  <Project Path="AssettoCorsaTelemetry.Api/AssettoCorsaTelemetry.Api.csproj" />
   <Project Path="AssettoCorsaTelemetry.Core/AssettoCorsaTelemetry.Core.csproj" />
   <Project Path="AssettoCorsaTelemetry.Dal/AssettoCorsaTelemetry.Dal.csproj" />
+  <Project Path="AssettoCorsaTelemetry.Dtos/AssettoCorsaTelemetry.Dtos.csproj" />
   <Project Path="AssettoCorsaTelemetry.Listener/AssettoCorsaTelemetry.Listener.csproj" />
 </Solution>

@@ -1,22 +1,22 @@
-﻿using AssettoCorsaTelemetry.Core.Events;
+﻿using System.Net.Http.Json;
 using AssettoCorsaTelemetry.Listener.Structs;
 using System.Net.Sockets;
-using System.Numerics;
 using System.Runtime.InteropServices;
-using AssettoCorsaTelemetry.Core.Entities;
-using AssettoCorsaTelemetry.Core.Interfaces;
+using AssettoCorsaTelemetry.Dtos;
 
 namespace AssettoCorsaTelemetry.Listener.Services
 {
-    public class PhysicsDataListener(UdpClient udpClient, IPhysicsDataService service) : IPhysicsDataListener
+    public class PhysicsDataListener
     {
-        public event EventHandler<UnassignedPhysicsDataInfoEventArgs>? PhysicsDataInfoUpdated;
+        private readonly HttpClient _apiClient;
+        private readonly UdpClient _udpClient;
         
         private bool _isRunning;
         
-        protected virtual void OnPhysicsDataInfoUpdated(UnassignedPhysicsDataInfoEventArgs e)
+        public PhysicsDataListener(IHttpClientFactory httpClientFactory, UdpClient udpClient)
         {
-            PhysicsDataInfoUpdated?.Invoke(this, e);
+            _apiClient = httpClientFactory.CreateClient("listener-api");
+            _udpClient = udpClient;
         }
 
         internal void Start()
@@ -34,7 +34,7 @@ namespace AssettoCorsaTelemetry.Listener.Services
         {
             while (_isRunning)
             {
-                UdpReceiveResult result = await udpClient.ReceiveAsync();
+                UdpReceiveResult result = await _udpClient.ReceiveAsync();
 
                 if (result.Buffer.Length < 328)
                 {
@@ -43,9 +43,8 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 }
                 
                 RTCarInfo carInfo = ReadResult(result);
-                UnassignedPhysicsData physicsData = MapToPhysicsData(carInfo);
-                OnPhysicsDataInfoUpdated(new UnassignedPhysicsDataInfoEventArgs(physicsData));
-                await service.AddPhysicsDataAsync(physicsData);
+                UnassignedPhysicsDataDto physicsData = MapToPhysicsData(carInfo);
+                await _apiClient.PostAsJsonAsync("listener/addphysicsdata", physicsData);
             }
         }
 
@@ -58,13 +57,11 @@ namespace AssettoCorsaTelemetry.Listener.Services
             handle.Free();
             return data;
         }
-        
-        private UnassignedPhysicsData MapToPhysicsData(RTCarInfo carInfo)
+
+        private UnassignedPhysicsDataDto MapToPhysicsData(RTCarInfo carInfo)
         {
-            return new UnassignedPhysicsData()
+            return new UnassignedPhysicsDataDto()
             {
-                Id = Guid.NewGuid(),
-                
                 Timestamp = DateTimeOffset.UtcNow,
                 
                 Identifier = carInfo.Identifier,
@@ -82,13 +79,9 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 InPit = carInfo.InPit != 0,
                 IsEngineLimiterOn = carInfo.IsEngineLimiterOn != 0,
 
-                AccGForces = new AccGForces
-                {
-                    Id = Guid.NewGuid(),
-                    Vertical = carInfo.AccGVertical,
-                    Horizontal = carInfo.AccGHorizontal,
-                    Frontal = carInfo.AccGFrontal,
-                },
+                AccGForces = [carInfo.AccGVertical,
+                    carInfo.AccGHorizontal, 
+                    carInfo.AccGFrontal],
 
                 LapTime = TimeSpan.FromMilliseconds(carInfo.LapTime),
                 LapCount = carInfo.LapCount,
@@ -103,45 +96,25 @@ namespace AssettoCorsaTelemetry.Listener.Services
 
                 CgHeight = carInfo.CgHeight,
 
-                WheelAngularSpeed = MapToWheelData(carInfo.WheelAngularSpeed),
-                SlipAngle = MapToWheelData(carInfo.SlipAngle),
-                SlipAngleContactPatch = MapToWheelData(carInfo.SlipAngleContactPatch),
-                SlipRatio = MapToWheelData(carInfo.SlipRatio),
-                TyreSlip = MapToWheelData(carInfo.TyreSlip),
-                NdSlip = MapToWheelData(carInfo.NdSlip),
-                Load = MapToWheelData(carInfo.Load),
-                Dy = MapToWheelData(carInfo.Dy),
-                Mz =  MapToWheelData(carInfo.Mz),
-                TyreDirtyLevel = MapToWheelData(carInfo.TyreDirtyLevel),
-                CamberRad = MapToWheelData(carInfo.CamberRad),
-                TyreRadius = MapToWheelData(carInfo.TyreRadius),
-                TyreLoadedRadius = MapToWheelData(carInfo.TyreLoadedRadius),
-                SuspensionHeight  = MapToWheelData(carInfo.SuspensionHeight),
+                WheelAngularSpeed = carInfo.WheelAngularSpeed,
+                SlipAngle = carInfo.SlipAngle,
+                SlipAngleContactPatch = carInfo.SlipAngleContactPatch,
+                SlipRatio = carInfo.SlipRatio,
+                TyreSlip = carInfo.TyreSlip,
+                NdSlip = carInfo.NdSlip,
+                Load = carInfo.Load,
+                Dy = carInfo.Dy,
+                Mz =  carInfo.Mz,
+                TyreDirtyLevel = carInfo.TyreDirtyLevel,
+                CamberRad = carInfo.CamberRad,
+                TyreRadius = carInfo.TyreRadius,
+                TyreLoadedRadius = carInfo.TyreLoadedRadius,
+                SuspensionHeight  = carInfo.SuspensionHeight,
 
                 CarPositionNormalized = carInfo.CarPositionNormalized,
                 CarSlope = carInfo.CarSlope,
 
-                CarCoordinates = new Vector3
-                {
-                    X = carInfo.CarCoordinates[0],
-                    Y = carInfo.CarCoordinates[1],
-                    Z = carInfo.CarCoordinates[2]
-                }
-            };
-        }
-
-        private WheelData MapToWheelData(float[] floatArray)
-        {
-            if (floatArray.Length != 4)
-                throw new InvalidOperationException("Invalid amount of wheels");
-
-            return new WheelData
-            {
-                Id = Guid.NewGuid(),
-                FrontLeft = floatArray[0],
-                FrontRight = floatArray[1],
-                RearLeft = floatArray[2],
-                RearRight = floatArray[3]
+                CarCoordinates = carInfo.CarCoordinates
             };
         }
     }
