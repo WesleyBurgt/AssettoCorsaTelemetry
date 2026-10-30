@@ -70,8 +70,6 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 
                 Identifier = carInfo.Identifier,
                 
-                Size = carInfo.Size,
-
                 SpeedKmh = carInfo.SpeedKmh,
                 SpeedMph = carInfo.SpeedMph,
                 SpeedMs = carInfo.SpeedMs,

@@ -55,20 +55,25 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                     b.Property<Guid>("DataId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("DataTimestamp")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("TrackId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DataId");
+                    b.HasIndex("DataTimestamp", "DataId");
 
                     b.ToTable("PhysicsDataTable");
                 });
 
             modelBuilder.Entity("AssettoCorsaTelemetry.Core.Entities.UnassignedPhysicsData", b =>
                 {
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("AccGForcesId")
@@ -141,9 +146,6 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                     b.Property<Guid>("NdSlipId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("SlipAngleContactPatchId")
                         .HasColumnType("uuid");
 
@@ -171,9 +173,6 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                     b.Property<float>("Throttle")
                         .HasColumnType("real");
 
-                    b.Property<DateTimeOffset>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("TyreDirtyLevelId")
                         .HasColumnType("uuid");
 
@@ -189,7 +188,7 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                     b.Property<Guid>("WheelAngularSpeedId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("Timestamp", "Id");
 
                     b.HasIndex("AccGForcesId");
 
@@ -251,7 +250,7 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                 {
                     b.HasOne("AssettoCorsaTelemetry.Core.Entities.UnassignedPhysicsData", "Data")
                         .WithMany()
-                        .HasForeignKey("DataId")
+                        .HasForeignKey("DataTimestamp", "DataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

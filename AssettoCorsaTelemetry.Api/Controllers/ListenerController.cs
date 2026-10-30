@@ -34,9 +34,7 @@ public class ListenerController(IPhysicsDataService physicsDataService) : Contro
             Timestamp = DateTimeOffset.UtcNow,
 
             Identifier = dto.Identifier,
-
-            Size = dto.Size,
-
+            
             SpeedKmh = dto.SpeedKmh,
             SpeedMph = dto.SpeedMph,
             SpeedMs = dto.SpeedMs,

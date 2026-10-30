@@ -5,9 +5,7 @@ public class UnassignedPhysicsDataDto
     public DateTimeOffset Timestamp { get; set; }
 
     public int Identifier { get; set; }
-
-    public int Size { get; set; }
-
+    
     public float SpeedKmh { get; set; }
     public float SpeedMph { get; set; }
     public float SpeedMs { get; set; }

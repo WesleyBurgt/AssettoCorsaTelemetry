@@ -15,6 +15,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<UnassignedPhysicsData>()
             .Property(x => x.CarCoordinates)
             .HasConversion(_vector3Converter);
+        
+        modelBuilder.Entity<UnassignedPhysicsData>()
+            .HasKey(x => new { x.Timestamp, x.Id });
     }
     
     private readonly ValueConverter<Vector3, List<float>> _vector3Converter = new (
