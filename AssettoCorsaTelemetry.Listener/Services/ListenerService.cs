@@ -30,6 +30,6 @@ public class ListenerService(IHttpClientFactory httpClientFactory) : IHostedServ
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        _physicsDataListener?.Stop();
+        await _physicsDataListener?.StopAsync()!;
     }
 }
