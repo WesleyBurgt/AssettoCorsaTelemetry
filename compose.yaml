@@ -50,6 +50,9 @@ services:
       dockerfile: AssettoCorsaTelemetry.Listener/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: telemetry
+      RabbitMQ__Password: telemetry_dev_password
     ports:
       - "8082:8080"
       
