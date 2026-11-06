@@ -54,14 +54,6 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                 principalTable: "UnassignedPhysicsData",
                 principalColumns: new[] { "Timestamp", "Id" },
                 onDelete: ReferentialAction.Cascade);
-            
-            migrationBuilder.Sql("""
-                                     SELECT create_hypertable(
-                                         'public."UnassignedPhysicsData"',
-                                         by_range('Timestamp', INTERVAL '1 day'),
-                                         if_not_exists => TRUE
-                                     );
-                                 """);
         }
 
         /// <inheritdoc />

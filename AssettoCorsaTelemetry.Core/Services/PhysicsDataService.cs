@@ -17,6 +17,7 @@ public class PhysicsDataService : IPhysicsDataService
         PhysicsData data = new PhysicsData
         {
             Id = Guid.NewGuid(),
+            Timestamp = unassignedPhysicsData.Timestamp,
             CarId = Guid.Empty,
             TrackId = Guid.Empty,
             Data = unassignedPhysicsData
