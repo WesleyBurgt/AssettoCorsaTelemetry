@@ -1,5 +1,6 @@
 ﻿using AssettoCorsaTelemetry.Core.Entities;
 using AssettoCorsaTelemetry.Core.Interfaces;
+using AssettoCorsaTelemetry.Dtos;
 
 namespace AssettoCorsaTelemetry.Core.Services;
 
@@ -27,18 +28,23 @@ public class PhysicsDataService : IPhysicsDataService
         await _physicsDataRepository.AddPhysicsData(data);
     }
     
-    public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<UnassignedPhysicsData> batch, CancellationToken cancellationToken = default)
+    public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<TelemetryReceived> batch, CancellationToken cancellationToken)
     {
         if (batch.Count == 0)
             return;
 
-        List<PhysicsData> records = batch.Select(data => new PhysicsData
+        Guid sessionId = batch.First().SessionId;
+
+        // Resolve the session once.
+        Session session = await _sessionRepository.GetByIdAsync(sessionId, cancellationToken);
+
+        List<PhysicsData> records = batch.Select(message => new PhysicsData
         {
             Id = Guid.NewGuid(),
-            Timestamp = data.Timestamp,
-            CarId = Guid.Empty,
-            TrackId = Guid.Empty,
-            Data = data
+            Timestamp = message.Data.Timestamp,
+            CarId = session.CarId,
+            TrackId = session.TrackId,
+            Data = UnassignedPhysicsData.FromDto(message.Data)
         }).ToList();
 
         await _physicsDataRepository.AddPhysicsDataBatchAsync(

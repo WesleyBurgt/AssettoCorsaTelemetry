@@ -24,6 +24,24 @@ services:
     restart: always
     ports:
       - "8081:8080"
+  
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: ac-telemetry-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: telemetry
+      RABBITMQ_DEFAULT_PASS: telemetry_dev_password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
       
   listener:
     image: listener
@@ -34,6 +52,24 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     ports:
       - "8082:8080"
+      
+  processor:
+    container_name: ac-telemetry-processor
+    build:
+      context: .
+      dockerfile: AssettoCorsaTelemetry.Processor/Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: telemetry
+      RabbitMQ__Password: telemetry_dev_password
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
         
   backend:
     image: backend
@@ -50,4 +86,5 @@ services:
         condition: service_healthy
 
 volumes:
+  rabbitmq_data:
   postgres_data:

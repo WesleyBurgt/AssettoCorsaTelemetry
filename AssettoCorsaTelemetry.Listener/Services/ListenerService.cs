@@ -1,9 +1,10 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using MassTransit;
 
 namespace AssettoCorsaTelemetry.Listener.Services;
 
-public class ListenerService(IHttpClientFactory httpClientFactory) : IHostedService
+public class ListenerService(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint) : IHostedService
 {
     private PhysicsDataListener? _physicsDataListener;
     
@@ -24,7 +25,7 @@ public class ListenerService(IHttpClientFactory httpClientFactory) : IHostedServ
 
         await handShakeService.GetHandShakeResponseAsync(cancellationToken);
 
-        _physicsDataListener = new PhysicsDataListener(httpClientFactory, udpClient);
+        _physicsDataListener = new PhysicsDataListener(httpClientFactory, publishEndpoint, udpClient);
         _physicsDataListener.Start();
     }
 

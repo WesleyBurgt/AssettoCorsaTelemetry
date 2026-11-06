@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-AssettoCorsaTelemetry.Processor-6a5a3dca-b25d-459d-abef-20861dbb09d1</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.12" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AssettoCorsaTelemetry.Core\AssettoCorsaTelemetry.Core.csproj" />
+      <ProjectReference Include="..\AssettoCorsaTelemetry.Dal\AssettoCorsaTelemetry.Dal.csproj" />
+      <ProjectReference Include="..\AssettoCorsaTelemetry.Dtos\AssettoCorsaTelemetry.Dtos.csproj" />
+    </ItemGroup>
+</Project>

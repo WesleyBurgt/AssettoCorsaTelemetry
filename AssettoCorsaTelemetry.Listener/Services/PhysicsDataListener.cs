@@ -3,21 +3,26 @@ using AssettoCorsaTelemetry.Listener.Structs;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using AssettoCorsaTelemetry.Dtos;
+using MassTransit;
 
 namespace AssettoCorsaTelemetry.Listener.Services
 {
     public class PhysicsDataListener
     {
         private readonly HttpClient _apiClient;
+        private readonly IPublishEndpoint _publishEndpoint;
         private readonly UdpClient _udpClient;
+        private readonly Guid _sessionId;
         
         private bool _isRunning;
         private List<UnassignedPhysicsDataDto> _dataToPost = [];
         private Task _postData = Task.CompletedTask;
         
-        public PhysicsDataListener(IHttpClientFactory httpClientFactory, UdpClient udpClient)
+        public PhysicsDataListener(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint, UdpClient udpClient)
         {
+            _sessionId = Guid.NewGuid();
             _apiClient = httpClientFactory.CreateClient("listener-api");
+            _publishEndpoint = publishEndpoint;
             _udpClient = udpClient;
         }
 
@@ -47,15 +52,13 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 
                 RTCarInfo carInfo = ReadResult(result);
                 UnassignedPhysicsDataDto physicsData = MapToPhysicsData(carInfo);
-                _dataToPost.Add(physicsData);
-                    
-                if (_postData.IsCompleted)
+                
+                await _publishEndpoint.Publish(new TelemetryReceived
                 {
-                    _postData = _apiClient.PostAsJsonAsync("listener/addphysicsdatabatch", _dataToPost);
-                    _dataToPost.Clear();
-                }
-
-                Console.WriteLine("current amount of data to send to database: " + _dataToPost.Count);
+                    SessionId = _sessionId,
+                    MessageId = Guid.NewGuid(),
+                    Data = physicsData
+                });
             }
         }
 

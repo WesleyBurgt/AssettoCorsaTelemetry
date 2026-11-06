@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AssettoCorsaTelemetry.Dtos\AssettoCorsaTelemetry.Dtos.csproj" />
+    </ItemGroup>
+
 </Project>

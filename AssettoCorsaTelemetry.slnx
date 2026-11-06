@@ -7,4 +7,5 @@
   <Project Path="AssettoCorsaTelemetry.Dal/AssettoCorsaTelemetry.Dal.csproj" />
   <Project Path="AssettoCorsaTelemetry.Dtos/AssettoCorsaTelemetry.Dtos.csproj" />
   <Project Path="AssettoCorsaTelemetry.Listener/AssettoCorsaTelemetry.Listener.csproj" />
+  <Project Path="AssettoCorsaTelemetry.Processor/AssettoCorsaTelemetry.Processor.csproj" />
 </Solution>
