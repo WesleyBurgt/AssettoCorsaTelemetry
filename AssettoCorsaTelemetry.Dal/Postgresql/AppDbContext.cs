@@ -8,6 +8,7 @@ namespace AssettoCorsaTelemetry.Dal.Postgresql;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<PhysicsData> PhysicsDataTable => Set<PhysicsData>();
+    public DbSet<Session> Sessions => Set<Session>();
     
     private readonly ValueConverter<Vector3, List<float>> _vector3Converter = new (
         vector => new List<float> {vector.X, vector.Y, vector.Z },

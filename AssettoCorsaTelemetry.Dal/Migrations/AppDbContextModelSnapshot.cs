@@ -42,6 +42,26 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                     b.ToTable("PhysicsData", (string)null);
                 });
 
+            modelBuilder.Entity("AssettoCorsaTelemetry.Core.Entities.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CarId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TrackId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sessions");
+                });
+
             modelBuilder.Entity("AssettoCorsaTelemetry.Core.Entities.PhysicsData", b =>
                 {
                     b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.UnassignedPhysicsData", "Data", b1 =>

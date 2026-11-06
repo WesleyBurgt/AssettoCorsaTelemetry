@@ -19,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connect
 
 builder.Services.AddScoped<AppDbContext>();
 builder.Services.AddScoped<IPhysicsDataRepository, PhysicsDataRepository>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IPhysicsDataService, PhysicsDataService>();
 builder.Services.AddControllers();
 

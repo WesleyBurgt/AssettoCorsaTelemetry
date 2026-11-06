@@ -5,11 +5,13 @@ namespace AssettoCorsaTelemetry.Core.Services;
 
 public class PhysicsDataService : IPhysicsDataService
 {
-    private readonly IPhysicsDataRepository _repository;
+    private readonly IPhysicsDataRepository _physicsDataRepository;
+    private readonly ISessionRepository _sessionRepository;
     
-    public PhysicsDataService(IPhysicsDataRepository repository)
+    public PhysicsDataService(IPhysicsDataRepository physicsDataRepository, ISessionRepository sessionRepository)
     {
-        _repository = repository;
+        _physicsDataRepository = physicsDataRepository;
+        _sessionRepository = sessionRepository;
     }
 
     public async Task AddPhysicsDataAsync(UnassignedPhysicsData unassignedPhysicsData)
@@ -22,7 +24,7 @@ public class PhysicsDataService : IPhysicsDataService
             TrackId = Guid.Empty,
             Data = unassignedPhysicsData
         };
-        await _repository.AddPhysicsData(data);
+        await _physicsDataRepository.AddPhysicsData(data);
     }
     
     public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<UnassignedPhysicsData> batch, CancellationToken cancellationToken = default)
@@ -39,6 +41,7 @@ public class PhysicsDataService : IPhysicsDataService
             Data = data
         }).ToList();
 
-        await _repository.AddPhysicsDataBatchAsync(records, cancellationToken);
+        await _physicsDataRepository.AddPhysicsDataBatchAsync(
+            records, cancellationToken);
     }
 }
