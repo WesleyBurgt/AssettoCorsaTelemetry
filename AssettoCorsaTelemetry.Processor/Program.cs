@@ -33,9 +33,6 @@ builder.Services.AddScoped<IPhysicsDataRepository, PhysicsDataRepository>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IPhysicsDataService, PhysicsDataService>();
 
-Console.WriteLine(
-    $"Database connection configured: ${connectionString}");
-
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PhysicsDataBatchConsumer>(cfg =>
