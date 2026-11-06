@@ -12,7 +12,8 @@ namespace AssettoCorsaTelemetry.Listener.Services
         private readonly UdpClient _udpClient;
         
         private bool _isRunning;
-        private List<Task> _runningTasks = [];
+        private List<UnassignedPhysicsDataDto> _dataToPost = [];
+        private Task _postData = Task.CompletedTask;
         
         public PhysicsDataListener(IHttpClientFactory httpClientFactory, UdpClient udpClient)
         {
@@ -29,7 +30,7 @@ namespace AssettoCorsaTelemetry.Listener.Services
         internal async Task StopAsync()
         {
             _isRunning = false;
-            await Task.WhenAll(_runningTasks);
+            await _postData;
         }
 
         private async Task ProcessCarInfo()
@@ -46,9 +47,15 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 
                 RTCarInfo carInfo = ReadResult(result);
                 UnassignedPhysicsDataDto physicsData = MapToPhysicsData(carInfo);
-                Task postData = _apiClient.PostAsJsonAsync("listener/addphysicsdata", physicsData);
-                _runningTasks.Add(postData);
-                _runningTasks.RemoveAll(task => task.IsCompleted);
+                _dataToPost.Add(physicsData);
+                    
+                if (_postData.IsCompleted)
+                {
+                    _postData = _apiClient.PostAsJsonAsync("listener/addphysicsdatabatch", _dataToPost);
+                    _dataToPost.Clear();
+                }
+
+                Console.WriteLine("current amount of data to send to database: " + _dataToPost.Count);
             }
         }
 

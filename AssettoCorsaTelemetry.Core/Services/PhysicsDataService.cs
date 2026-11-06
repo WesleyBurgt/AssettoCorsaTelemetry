@@ -24,4 +24,21 @@ public class PhysicsDataService : IPhysicsDataService
         };
         await _repository.AddPhysicsData(data);
     }
+    
+    public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<UnassignedPhysicsData> batch, CancellationToken cancellationToken = default)
+    {
+        if (batch.Count == 0)
+            return;
+
+        List<PhysicsData> records = batch.Select(data => new PhysicsData
+        {
+            Id = Guid.NewGuid(),
+            Timestamp = data.Timestamp,
+            CarId = Guid.Empty,
+            TrackId = Guid.Empty,
+            Data = data
+        }).ToList();
+
+        await _repository.AddPhysicsDataBatchAsync(records, cancellationToken);
+    }
 }

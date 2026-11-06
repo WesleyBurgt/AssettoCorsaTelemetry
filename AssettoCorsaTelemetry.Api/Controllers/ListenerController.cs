@@ -24,6 +24,21 @@ public class ListenerController(IPhysicsDataService physicsDataService) : Contro
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpPost("addphysicsdatabatch")]
+    public async Task<IActionResult> AddPhysicsDataBaatch([FromBody] IReadOnlyCollection<UnassignedPhysicsDataDto> dtos)
+    {
+        try
+        {
+            List<UnassignedPhysicsData> data = dtos.Select(MapToUnassignedPhysicsData).ToList();
+            await physicsDataService.AddPhysicsDataBatchAsync(data);
+            return Ok();
+        }
+        catch (BadHttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
     private UnassignedPhysicsData MapToUnassignedPhysicsData(UnassignedPhysicsDataDto dto)
     {
@@ -90,7 +105,6 @@ public class ListenerController(IPhysicsDataService physicsDataService) : Contro
         
         return new WheelData
         {
-            Id = Guid.NewGuid(),
             FrontLeft = data[0],
             FrontRight = data[1],
             RearLeft = data[2],
@@ -105,7 +119,6 @@ public class ListenerController(IPhysicsDataService physicsDataService) : Contro
         
         return new AccGForces
         {
-            Id = Guid.NewGuid(),
             Vertical = data[0],
             Horizontal = data[1],
             Frontal =  data[2]

@@ -1,3 +1,4 @@
+using AssettoCorsaTelemetry.Core;
 using AssettoCorsaTelemetry.Core.Interfaces;
 using AssettoCorsaTelemetry.Core.Services;
 using AssettoCorsaTelemetry.Dal.Postgresql;
@@ -9,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.Configure<AppSettings>(options =>
+{
+    options.ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+});
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
