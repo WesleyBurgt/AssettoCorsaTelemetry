@@ -2,7 +2,7 @@
 using AssettoCorsaTelemetry.Listener.Enums;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Runtime.InteropServices;
 
 namespace AssettoCorsaTelemetry.Listener.Services
 {
@@ -36,7 +36,7 @@ namespace AssettoCorsaTelemetry.Listener.Services
         {
             try
             {
-                var response = await _udpClient.ReceiveAsync(cancellationToken);
+                UdpReceiveResult response = await _udpClient.ReceiveAsync(cancellationToken);
 
                 Console.WriteLine($"Received {response.Buffer.Length} bytes from {response.RemoteEndPoint}");
 
@@ -44,7 +44,7 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 {
                     Console.WriteLine();
                     Console.WriteLine("Handshake received!");
-                    HandShakeResponse handShakeResponse = ParseHandshake(response.Buffer);
+                    HandShakeResponse handShakeResponse = ReadResult(response);
                     DisplayHandshake(handShakeResponse);
 
                     Console.WriteLine();
@@ -79,25 +79,15 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 Console.WriteLine($"  - UDP port is {_endPoint.Port}");
             }
         }
-
-        private HandShakeResponse ParseHandshake(byte[] data)
+        
+        private HandShakeResponse ReadResult(UdpReceiveResult result)
         {
-            string carName = ReadString(data, 0, 100);
-            string driverName = ReadString(data, 100, 100);
-            int identifier = BitConverter.ToInt32(data, 200);
-            int version = BitConverter.ToInt32(data, 204);
-            string trackName = ReadString(data, 208, 100);
-            string trackConfig = ReadString(data, 308, 100);
+            byte[] bytes = result.Buffer;
 
-            return new HandShakeResponse
-            {
-                CarName = carName,
-                DriverName = driverName,
-                Identifier = identifier,
-                Version = version,
-                TrackName = trackName,
-                TrackConfig = trackConfig
-            };
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            HandShakeResponse data = Marshal.PtrToStructure<HandShakeResponse>(handle.AddrOfPinnedObject());
+            handle.Free();
+            return data;
         }
 
         private void DisplayHandshake(HandShakeResponse handShakeResponse)
@@ -108,12 +98,6 @@ namespace AssettoCorsaTelemetry.Listener.Services
             Console.WriteLine($"  Track config:{handShakeResponse.TrackConfig}");
             Console.WriteLine($"  Identifier:  {handShakeResponse.Identifier}");
             Console.WriteLine($"  Version:     {handShakeResponse.Version}");
-        }
-
-        private string ReadString(byte[] data, int offset, int length)
-        {
-            return Encoding.Unicode.GetString(data, offset, length)
-                                   .TrimEnd('\0');
         }
     }
 }
