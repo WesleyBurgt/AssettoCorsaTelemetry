@@ -1,20 +1,26 @@
 ﻿using AssettoCorsaTelemetry.Listener.Structs;
 using AssettoCorsaTelemetry.Listener.Enums;
 using System.Net;
+using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using AssettoCorsaTelemetry.Dtos;
 
 namespace AssettoCorsaTelemetry.Listener.Services
 {
     public class HandShakeService
     {
+        public Guid SessionId { get; private set; } = Guid.NewGuid();
+        
+        private readonly HttpClient _apiClient;
         private readonly IPEndPoint _endPoint;
         private readonly UdpClient _udpClient;
         private readonly byte[] _handShakeOperationBytes;
         private readonly byte[] _subscribePhysicsOperationBytes;
 
-        public HandShakeService(IPEndPoint endpoint, UdpClient udpClient)
+        public HandShakeService(IHttpClientFactory httpClientFactory, IPEndPoint endpoint, UdpClient udpClient)
         {
+            _apiClient = httpClientFactory.CreateClient("listener-api");
             _endPoint = endpoint;
             _udpClient = udpClient;
             
@@ -57,7 +63,10 @@ namespace AssettoCorsaTelemetry.Listener.Services
 
                 Console.WriteLine();
                 Console.WriteLine("Handshake received!");
+                SessionId = Guid.NewGuid();
                 HandShakeResponse handShakeResponse = ReadResult(response);
+                SessionDto session = MapToSessionDto(handShakeResponse);
+                await _apiClient.PostAsJsonAsync("listener/session", session, cancellationToken);
                 DisplayHandshake(handShakeResponse);
 
                 Console.WriteLine();
@@ -96,6 +105,18 @@ namespace AssettoCorsaTelemetry.Listener.Services
             Console.WriteLine($"  Track config:{handShakeResponse.TrackConfig}");
             Console.WriteLine($"  Identifier:  {handShakeResponse.Identifier}");
             Console.WriteLine($"  Version:     {handShakeResponse.Version}");
+        }
+
+        private SessionDto MapToSessionDto(HandShakeResponse handShakeResponse)
+        {
+            return new SessionDto
+            {
+                Id = SessionId,
+                CarName = handShakeResponse.CarName,
+                DriverName = handShakeResponse.DriverName,
+                TrackName = handShakeResponse.TrackName,
+                TrackConfiguration = handShakeResponse.TrackConfig
+            };
         }
     }
 }

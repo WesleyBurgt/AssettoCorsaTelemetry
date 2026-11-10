@@ -4,5 +4,6 @@ namespace AssettoCorsaTelemetry.Core.Interfaces;
 
 public interface ICarRepository
 {
-    public Car GetCar(Guid userId, string model);
+    public Task<Car> GetCarAsync(Guid userId, string modelName, CancellationToken cancellationToken = default);
+    public Task AddCarAsync(Car car, CancellationToken cancellationToken = default);
 }

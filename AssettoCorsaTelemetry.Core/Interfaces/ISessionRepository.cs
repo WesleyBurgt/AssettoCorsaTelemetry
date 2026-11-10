@@ -4,5 +4,6 @@ namespace AssettoCorsaTelemetry.Core.Interfaces;
 
 public interface ISessionRepository
 {
+    public Task AddSessionAsync(Session session, CancellationToken cancellationToken = default);
     public Task<Session> GetByIdAsync(Guid sessionId, CancellationToken cancellationToken = default);
 }

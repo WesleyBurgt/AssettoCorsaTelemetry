@@ -18,9 +18,12 @@ builder.Services.Configure<AppSettings>(options =>
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<AppDbContext>();
-builder.Services.AddScoped<IPhysicsDataRepository, PhysicsDataRepository>();
+builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
-builder.Services.AddScoped<IPhysicsDataService, PhysicsDataService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>

@@ -9,6 +9,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<PhysicsData> PhysicsDataTable => Set<PhysicsData>();
     public DbSet<Session> Sessions => Set<Session>();
+    public DbSet<Car> Cars => Set<Car>();
+    public DbSet<Track> Tracks => Set<Track>();
     
     private readonly ValueConverter<Vector3, List<float>> _vector3Converter = new (
         vector => new List<float> {vector.X, vector.Y, vector.Z },

@@ -20,12 +20,12 @@ public class ListenerService(IHttpClientFactory httpClientFactory, IPublishEndpo
         IPEndPoint endpoint = new(address, acPort); 
         UdpClient udpClient = new UdpClient();
 
-        HandShakeService handShakeService = new HandShakeService(endpoint, udpClient);
+        HandShakeService handShakeService = new HandShakeService(httpClientFactory, endpoint, udpClient);
         await handShakeService.SendHandShakeRequestAsync();
 
         await handShakeService.GetHandShakeResponseAsync(cancellationToken);
 
-        _physicsDataListener = new PhysicsDataListener(httpClientFactory, publishEndpoint, udpClient);
+        _physicsDataListener = new PhysicsDataListener(publishEndpoint, udpClient, handShakeService.SessionId);
         _physicsDataListener.Start();
     }
 

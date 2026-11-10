@@ -4,15 +4,8 @@ using AssettoCorsaTelemetry.Dtos;
 
 namespace AssettoCorsaTelemetry.Core.Services;
 
-public class PhysicsDataService : IPhysicsDataService
+public class PhysicsDataService(IPhysicsDataRepository repository) : IPhysicsDataService
 {
-    private readonly IPhysicsDataRepository _physicsDataRepository;
-    
-    public PhysicsDataService(IPhysicsDataRepository physicsDataRepository)
-    {
-        _physicsDataRepository = physicsDataRepository;
-    }
-    
     public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<TelemetryReceived> batch, CancellationToken cancellationToken)
     {
         if (batch.Count == 0)
@@ -21,6 +14,6 @@ public class PhysicsDataService : IPhysicsDataService
         List<PhysicsData> records = batch.Select(message => PhysicsData.FromDto(message.Data))
                                          .ToList();
 
-        await _physicsDataRepository.AddPhysicsDataBatchAsync(records, cancellationToken);
+        await repository.AddPhysicsDataBatchAsync(records, cancellationToken);
     }
 }

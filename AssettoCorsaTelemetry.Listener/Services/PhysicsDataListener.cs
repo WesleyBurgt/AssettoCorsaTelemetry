@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using AssettoCorsaTelemetry.Listener.Structs;
+﻿using AssettoCorsaTelemetry.Listener.Structs;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using AssettoCorsaTelemetry.Dtos;
@@ -9,33 +8,30 @@ namespace AssettoCorsaTelemetry.Listener.Services
 {
     public class PhysicsDataListener
     {
-        private readonly HttpClient _apiClient;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly UdpClient _udpClient;
         private readonly Guid _sessionId;
         
         private bool _isRunning;
-        private List<PhysicsDataDto> _dataToPost = [];
-        private Task _postData = Task.CompletedTask;
+        private Task _processCarInfo = Task.CompletedTask;
         
-        public PhysicsDataListener(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint, UdpClient udpClient)
+        public PhysicsDataListener(IPublishEndpoint publishEndpoint, UdpClient udpClient, Guid sessionId)
         {
-            _sessionId = Guid.NewGuid();
-            _apiClient = httpClientFactory.CreateClient("listener-api");
             _publishEndpoint = publishEndpoint;
             _udpClient = udpClient;
+            _sessionId = sessionId;
         }
 
         internal void Start()
         {
             _isRunning = true;
-            _ = ProcessCarInfo();
+            _processCarInfo = ProcessCarInfo();
         }
 
         internal async Task StopAsync()
         {
             _isRunning = false;
-            await _postData;
+            await _processCarInfo;
         }
 
         private async Task ProcessCarInfo()
