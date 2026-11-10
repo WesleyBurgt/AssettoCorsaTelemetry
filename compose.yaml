@@ -55,6 +55,11 @@ services:
       RabbitMQ__Password: telemetry_dev_password
     ports:
       - "8082:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
       
   processor:
     container_name: ac-telemetry-processor
@@ -87,6 +92,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
   rabbitmq_data:

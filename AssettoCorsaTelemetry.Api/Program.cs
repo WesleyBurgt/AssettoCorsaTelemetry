@@ -26,6 +26,8 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddControllers();
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ListenerPolicy", policy =>
@@ -47,5 +49,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors("ListenerPolicy");
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
