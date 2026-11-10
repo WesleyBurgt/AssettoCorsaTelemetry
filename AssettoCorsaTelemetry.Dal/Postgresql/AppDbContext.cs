@@ -28,31 +28,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(x => x.Timestamp)
                 .IsRequired();
 
-            entity.OwnsOne(x => x.Data, data =>
-            {
-                data.Property(x => x.Timestamp);
+            entity.Property(x => x.CarCoordinates).HasConversion(_vector3Converter);
 
-                data.Property(x => x.CarCoordinates)
-                    .HasConversion(_vector3Converter);
-
-                data.OwnsOne(x => x.AccGForces);
-                data.OwnsOne(x => x.CamberRad);
-                data.OwnsOne(x => x.Dy);
-                data.OwnsOne(x => x.Load);
-                data.OwnsOne(x => x.Mz);
-                data.OwnsOne(x => x.NdSlip);
-                data.OwnsOne(x => x.SlipAngle);
-                data.OwnsOne(x => x.SlipAngleContactPatch);
-                data.OwnsOne(x => x.SlipRatio);
-                data.OwnsOne(x => x.SuspensionHeight);
-                data.OwnsOne(x => x.TyreDirtyLevel);
-                data.OwnsOne(x => x.TyreLoadedRadius);
-                data.OwnsOne(x => x.TyreRadius);
-                data.OwnsOne(x => x.TyreSlip);
-                data.OwnsOne(x => x.WheelAngularSpeed);
-            });
-
-            entity.Navigation(x => x.Data).IsRequired();
+            entity.OwnsOne(x => x.AccGForces);
+            entity.OwnsOne(x => x.CamberRad);
+            entity.OwnsOne(x => x.Dy);
+            entity.OwnsOne(x => x.Load);
+            entity.OwnsOne(x => x.Mz);
+            entity.OwnsOne(x => x.NdSlip);
+            entity.OwnsOne(x => x.SlipAngle);
+            entity.OwnsOne(x => x.SlipAngleContactPatch);
+            entity.OwnsOne(x => x.SlipRatio);
+            entity.OwnsOne(x => x.SuspensionHeight);
+            entity.OwnsOne(x => x.TyreDirtyLevel);
+            entity.OwnsOne(x => x.TyreLoadedRadius);
+            entity.OwnsOne(x => x.TyreRadius);
+            entity.OwnsOne(x => x.TyreSlip);
+            entity.OwnsOne(x => x.WheelAngularSpeed);
         });
     }
 }

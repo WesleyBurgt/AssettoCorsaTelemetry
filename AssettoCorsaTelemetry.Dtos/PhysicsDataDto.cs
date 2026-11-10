@@ -1,7 +1,8 @@
 ﻿namespace AssettoCorsaTelemetry.Dtos;
 
-public class UnassignedPhysicsDataDto
+public class PhysicsDataDto
 {
+    public Guid SessionId { get; set; }
     public DateTimeOffset Timestamp { get; set; }
 
     public int Identifier { get; set; }

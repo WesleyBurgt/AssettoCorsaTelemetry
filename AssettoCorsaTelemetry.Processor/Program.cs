@@ -42,7 +42,7 @@ builder.Services.AddMassTransit(x =>
             .SetTimeLimit(TimeSpan.FromMilliseconds(250))
             .SetConcurrencyLimit(1)
             .GroupBy<TelemetryReceived, Guid>(
-                context => context.Message.SessionId));
+                context => context.Message.Data.SessionId));
     });
 
     x.UsingRabbitMq((context, cfg) =>

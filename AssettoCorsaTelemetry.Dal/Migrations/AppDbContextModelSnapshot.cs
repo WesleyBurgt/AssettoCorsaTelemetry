@@ -31,11 +31,75 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CarId")
+                    b.Property<float>("Brake")
+                        .HasColumnType("real");
+
+                    b.Property<List<float>>("CarCoordinates")
+                        .IsRequired()
+                        .HasColumnType("real[]");
+
+                    b.Property<float>("CarPositionNormalized")
+                        .HasColumnType("real");
+
+                    b.Property<float>("CarSlope")
+                        .HasColumnType("real");
+
+                    b.Property<float>("CgHeight")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Clutch")
+                        .HasColumnType("real");
+
+                    b.Property<float>("EngineRpm")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Gear")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Identifier")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("InPit")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsAbsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsAbsInAction")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEngineLimiterOn")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTcEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTcInAction")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("LapCount")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeSpan>("LapTime")
+                        .HasColumnType("interval");
+
+                    b.Property<Guid>("SessionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("TrackId")
-                        .HasColumnType("uuid");
+                    b.Property<float>("SpeedKmh")
+                        .HasColumnType("real");
+
+                    b.Property<float>("SpeedMph")
+                        .HasColumnType("real");
+
+                    b.Property<float>("SpeedMs")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Steering")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Throttle")
+                        .HasColumnType("real");
 
                     b.HasKey("Timestamp", "Id");
 
@@ -64,7 +128,7 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
 
             modelBuilder.Entity("AssettoCorsaTelemetry.Core.Entities.PhysicsData", b =>
                 {
-                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.UnassignedPhysicsData", "Data", b1 =>
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.AccGForces", "AccGForces", b1 =>
                         {
                             b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
                                 .HasColumnType("timestamp with time zone");
@@ -72,78 +136,14 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                             b1.Property<Guid>("PhysicsDataId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<float>("Brake")
+                            b1.Property<float>("Frontal")
                                 .HasColumnType("real");
 
-                            b1.Property<List<float>>("CarCoordinates")
-                                .IsRequired()
-                                .HasColumnType("real[]");
-
-                            b1.Property<float>("CarPositionNormalized")
+                            b1.Property<float>("Horizontal")
                                 .HasColumnType("real");
 
-                            b1.Property<float>("CarSlope")
+                            b1.Property<float>("Vertical")
                                 .HasColumnType("real");
-
-                            b1.Property<float>("CgHeight")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("Clutch")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("EngineRpm")
-                                .HasColumnType("real");
-
-                            b1.Property<int>("Gear")
-                                .HasColumnType("integer");
-
-                            b1.Property<Guid>("Id")
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Identifier")
-                                .HasColumnType("integer");
-
-                            b1.Property<bool>("InPit")
-                                .HasColumnType("boolean");
-
-                            b1.Property<bool>("IsAbsEnabled")
-                                .HasColumnType("boolean");
-
-                            b1.Property<bool>("IsAbsInAction")
-                                .HasColumnType("boolean");
-
-                            b1.Property<bool>("IsEngineLimiterOn")
-                                .HasColumnType("boolean");
-
-                            b1.Property<bool>("IsTcEnabled")
-                                .HasColumnType("boolean");
-
-                            b1.Property<bool>("IsTcInAction")
-                                .HasColumnType("boolean");
-
-                            b1.Property<int>("LapCount")
-                                .HasColumnType("integer");
-
-                            b1.Property<TimeSpan>("LapTime")
-                                .HasColumnType("interval");
-
-                            b1.Property<float>("SpeedKmh")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("SpeedMph")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("SpeedMs")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("Steering")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("Throttle")
-                                .HasColumnType("real");
-
-                            b1.Property<DateTimeOffset>("Timestamp")
-                                .HasColumnType("timestamp with time zone");
 
                             b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
 
@@ -151,471 +151,443 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.AccGForces", "AccGForces", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("Frontal")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("Horizontal")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("Vertical")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "CamberRad", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "Dy", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "Load", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "Mz", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "NdSlip", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SlipAngle", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SlipAngleContactPatch", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SlipRatio", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SuspensionHeight", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreDirtyLevel", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreLoadedRadius", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreRadius", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreSlip", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "WheelAngularSpeed", b2 =>
-                                {
-                                    b2.Property<DateTimeOffset>("UnassignedPhysicsDataPhysicsDataTimestamp")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.Property<Guid>("UnassignedPhysicsDataPhysicsDataId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<float>("FrontLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("FrontRight")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearLeft")
-                                        .HasColumnType("real");
-
-                                    b2.Property<float>("RearRight")
-                                        .HasColumnType("real");
-
-                                    b2.HasKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-
-                                    b2.ToTable("PhysicsData");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UnassignedPhysicsDataPhysicsDataTimestamp", "UnassignedPhysicsDataPhysicsDataId");
-                                });
-
-                            b1.Navigation("AccGForces")
-                                .IsRequired();
-
-                            b1.Navigation("CamberRad")
-                                .IsRequired();
-
-                            b1.Navigation("Dy")
-                                .IsRequired();
-
-                            b1.Navigation("Load")
-                                .IsRequired();
-
-                            b1.Navigation("Mz")
-                                .IsRequired();
-
-                            b1.Navigation("NdSlip")
-                                .IsRequired();
-
-                            b1.Navigation("SlipAngle")
-                                .IsRequired();
-
-                            b1.Navigation("SlipAngleContactPatch")
-                                .IsRequired();
-
-                            b1.Navigation("SlipRatio")
-                                .IsRequired();
-
-                            b1.Navigation("SuspensionHeight")
-                                .IsRequired();
-
-                            b1.Navigation("TyreDirtyLevel")
-                                .IsRequired();
-
-                            b1.Navigation("TyreLoadedRadius")
-                                .IsRequired();
-
-                            b1.Navigation("TyreRadius")
-                                .IsRequired();
-
-                            b1.Navigation("TyreSlip")
-                                .IsRequired();
-
-                            b1.Navigation("WheelAngularSpeed")
-                                .IsRequired();
                         });
 
-                    b.Navigation("Data")
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "CamberRad", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "Dy", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "Load", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "Mz", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "NdSlip", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SlipAngle", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SlipAngleContactPatch", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SlipRatio", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "SuspensionHeight", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreDirtyLevel", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreLoadedRadius", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreRadius", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "TyreSlip", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.OwnsOne("AssettoCorsaTelemetry.Core.Entities.WheelData", "WheelAngularSpeed", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("PhysicsDataTimestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<Guid>("PhysicsDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<float>("FrontLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("FrontRight")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearLeft")
+                                .HasColumnType("real");
+
+                            b1.Property<float>("RearRight")
+                                .HasColumnType("real");
+
+                            b1.HasKey("PhysicsDataTimestamp", "PhysicsDataId");
+
+                            b1.ToTable("PhysicsData");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PhysicsDataTimestamp", "PhysicsDataId");
+                        });
+
+                    b.Navigation("AccGForces")
+                        .IsRequired();
+
+                    b.Navigation("CamberRad")
+                        .IsRequired();
+
+                    b.Navigation("Dy")
+                        .IsRequired();
+
+                    b.Navigation("Load")
+                        .IsRequired();
+
+                    b.Navigation("Mz")
+                        .IsRequired();
+
+                    b.Navigation("NdSlip")
+                        .IsRequired();
+
+                    b.Navigation("SlipAngle")
+                        .IsRequired();
+
+                    b.Navigation("SlipAngleContactPatch")
+                        .IsRequired();
+
+                    b.Navigation("SlipRatio")
+                        .IsRequired();
+
+                    b.Navigation("SuspensionHeight")
+                        .IsRequired();
+
+                    b.Navigation("TyreDirtyLevel")
+                        .IsRequired();
+
+                    b.Navigation("TyreLoadedRadius")
+                        .IsRequired();
+
+                    b.Navigation("TyreRadius")
+                        .IsRequired();
+
+                    b.Navigation("TyreSlip")
+                        .IsRequired();
+
+                    b.Navigation("WheelAngularSpeed")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

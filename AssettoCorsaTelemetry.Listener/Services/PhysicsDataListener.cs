@@ -15,7 +15,7 @@ namespace AssettoCorsaTelemetry.Listener.Services
         private readonly Guid _sessionId;
         
         private bool _isRunning;
-        private List<UnassignedPhysicsDataDto> _dataToPost = [];
+        private List<PhysicsDataDto> _dataToPost = [];
         private Task _postData = Task.CompletedTask;
         
         public PhysicsDataListener(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint, UdpClient udpClient)
@@ -51,11 +51,10 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 }
                 
                 RTCarInfo carInfo = ReadResult(result);
-                UnassignedPhysicsDataDto physicsData = MapToPhysicsData(carInfo);
+                PhysicsDataDto physicsData = MapToPhysicsData(carInfo);
                 
                 await _publishEndpoint.Publish(new TelemetryReceived
                 {
-                    SessionId = _sessionId,
                     MessageId = Guid.NewGuid(),
                     Data = physicsData
                 });
@@ -72,10 +71,12 @@ namespace AssettoCorsaTelemetry.Listener.Services
             return data;
         }
 
-        private UnassignedPhysicsDataDto MapToPhysicsData(RTCarInfo carInfo)
+        private PhysicsDataDto MapToPhysicsData(RTCarInfo carInfo)
         {
-            return new UnassignedPhysicsDataDto()
+            return new PhysicsDataDto()
             {
+                SessionId = _sessionId,
+                
                 Timestamp = DateTimeOffset.UtcNow,
                 
                 Identifier = carInfo.Identifier,
