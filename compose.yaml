@@ -33,8 +33,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: telemetry
-      RABBITMQ_DEFAULT_PASS: telemetry_dev_password
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
@@ -50,9 +50,9 @@ services:
       dockerfile: AssettoCorsaTelemetry.Listener/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      RabbitMQ__Host: rabbitmq
-      RabbitMQ__Username: telemetry
-      RabbitMQ__Password: telemetry_dev_password
+      RabbitMQ__Host: ${RABBITMQ_HOST}
+      RabbitMQ__Username: ${RABBITMQ_USER}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
     ports:
       - "8082:8080"
     depends_on:
@@ -70,9 +70,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-      RabbitMQ__Host: rabbitmq
-      RabbitMQ__Username: telemetry
-      RabbitMQ__Password: telemetry_dev_password
+      RabbitMQ__Host: ${RABBITMQ_HOST}
+      RabbitMQ__Username: ${RABBITMQ_USER}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
     depends_on:
       rabbitmq:
         condition: service_healthy
