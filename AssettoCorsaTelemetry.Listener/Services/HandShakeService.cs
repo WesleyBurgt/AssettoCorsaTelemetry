@@ -8,27 +8,36 @@ namespace AssettoCorsaTelemetry.Listener.Services
 {
     public class HandShakeService
     {
-        private IPEndPoint _endPoint;
-        private UdpClient _udpClient;
+        private readonly IPEndPoint _endPoint;
+        private readonly UdpClient _udpClient;
+        private readonly byte[] _handShakeOperationBytes;
+        private readonly byte[] _subscribePhysicsOperationBytes;
 
         public HandShakeService(IPEndPoint endpoint, UdpClient udpClient)
         {
             _endPoint = endpoint;
             _udpClient = udpClient;
+            
+            UdpOperation handShake = new UdpOperation
+            {
+                Identifier = 1,
+                Version = 1,
+                OperationId = OperationId.Handshake
+            };
+            _handShakeOperationBytes = handShake.ToByteArray();
+            UdpOperation subscribe = new UdpOperation
+            {
+                Identifier = 1,
+                Version = 1,
+                OperationId = OperationId.SubscribeUpdate
+            };
+            _subscribePhysicsOperationBytes = subscribe.ToByteArray();
         }
 
         public async Task SendHandShakeRequestAsync()
         {
             Console.WriteLine($"Sending handshake to {_endPoint.Address}:{_endPoint.Port}...");
-            UdpOperation handShake = new UdpOperation
-            {
-                Identifier = 0,
-                Version = 1,
-                OperationId = OperationId.Handshake
-            };
-            byte[] handShakeBytes = handShake.ToByteArray();
-
-            await _udpClient.SendAsync(handShakeBytes, handShakeBytes.Length, _endPoint);
+            await _udpClient.SendAsync(_handShakeOperationBytes, _handShakeOperationBytes.Length, _endPoint);
             Console.WriteLine("Handshake sent. Waiting for Assetto Corsa...");
         }
 
@@ -40,32 +49,21 @@ namespace AssettoCorsaTelemetry.Listener.Services
 
                 Console.WriteLine($"Received {response.Buffer.Length} bytes from {response.RemoteEndPoint}");
 
-                if (response.Buffer.Length == 408)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Handshake received!");
-                    HandShakeResponse handShakeResponse = ReadResult(response);
-                    DisplayHandshake(handShakeResponse);
-
-                    Console.WriteLine();
-                    Console.WriteLine("Subscribing to car telemetry...");
-
-                    UdpOperation subscribe = new UdpOperation
-                    {
-                        Identifier = 0,
-                        Version = 1,
-                        OperationId = OperationId.SubscribeUpdate
-                    };
-                    byte[] subscribeBytes = subscribe.ToByteArray();
-
-                    await _udpClient.SendAsync(subscribeBytes, subscribeBytes.Length, _endPoint);
-
-                    Console.WriteLine("Subscribed to car telemetry");
-                }
-                else
+                if (response.Buffer.Length != 408)
                 {
                     Console.WriteLine($"Unexpected packet size: {response.Buffer.Length}");
+                    return;
                 }
+
+                Console.WriteLine();
+                Console.WriteLine("Handshake received!");
+                HandShakeResponse handShakeResponse = ReadResult(response);
+                DisplayHandshake(handShakeResponse);
+
+                Console.WriteLine();
+                Console.WriteLine("Subscribing to car telemetry...");
+                await _udpClient.SendAsync(_subscribePhysicsOperationBytes, _subscribePhysicsOperationBytes.Length, _endPoint);
+                Console.WriteLine("Subscribed to car telemetry");
             }
             catch (OperationCanceledException)
             {
