@@ -50,6 +50,8 @@ services:
       dockerfile: AssettoCorsaTelemetry.Listener/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      AC_IP: ${AC_IP}
+      AC_PORT: ${AC_PORT}
       RabbitMQ__Host: ${RABBITMQ_HOST}
       RabbitMQ__Username: ${RABBITMQ_USER}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}

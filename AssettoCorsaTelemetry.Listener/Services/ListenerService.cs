@@ -11,7 +11,7 @@ public class ListenerService(IHttpClientFactory httpClientFactory, IPublishEndpo
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         var acIp = Environment.GetEnvironmentVariable("AC_IP") ?? "host.docker.internal";
-        var acPortString = Environment.GetEnvironmentVariable("AC_IP") ?? "9996";
+        var acPortString = Environment.GetEnvironmentVariable("AC_PORT") ?? "9996";
         int acPort = Convert.ToInt32(acPortString);
 
         IPHostEntry hostEntry = await Dns.GetHostEntryAsync(acIp, cancellationToken);
