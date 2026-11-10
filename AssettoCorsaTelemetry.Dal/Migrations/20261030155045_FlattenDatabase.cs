@@ -624,6 +624,14 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                 name: "PK_PhysicsData",
                 table: "PhysicsData",
                 columns: new[] { "Timestamp", "Id" });
+            
+            migrationBuilder.Sql("""
+                                     SELECT create_hypertable(
+                                         'public."PhysicsData"',
+                                         by_range('Timestamp', INTERVAL '1 day'),
+                                         if_not_exists => TRUE
+                                     );
+                                 """);
         }
 
         /// <inheritdoc />
@@ -1235,14 +1243,6 @@ namespace AssettoCorsaTelemetry.DAL.Migrations
                 principalTable: "UnassignedPhysicsData",
                 principalColumns: new[] { "Timestamp", "Id" },
                 onDelete: ReferentialAction.Cascade);
-            
-            migrationBuilder.Sql("""
-                                     SELECT create_hypertable(
-                                         'public."PhysicsData"',
-                                         by_range('Timestamp', INTERVAL '1 day'),
-                                         if_not_exists => TRUE
-                                     );
-                                 """);
         }
     }
 }
