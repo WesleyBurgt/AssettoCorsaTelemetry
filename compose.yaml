@@ -43,6 +43,24 @@ services:
       timeout: 5s
       retries: 5
       
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ac-telemetry-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      db:
+        condition: service_healthy
+      
+      
   listener:
     image: listener
     build:
@@ -104,3 +122,4 @@ services:
 volumes:
   rabbitmq_data:
   postgres_data:
+  grafana_data:
