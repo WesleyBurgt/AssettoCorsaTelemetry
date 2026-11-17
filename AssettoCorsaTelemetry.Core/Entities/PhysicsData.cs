@@ -119,7 +119,7 @@ public class PhysicsData
             Id = Guid.NewGuid(),
             SessionId = dto.SessionId,
 
-            Timestamp = DateTimeOffset.UtcNow,
+            Timestamp = dto.Timestamp,
 
             Identifier = dto.Identifier,
 
