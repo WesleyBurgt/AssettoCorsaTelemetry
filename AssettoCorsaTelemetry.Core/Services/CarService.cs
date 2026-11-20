@@ -5,17 +5,12 @@ namespace AssettoCorsaTelemetry.Core.Services;
 
 public class CarService(ICarRepository repository) : ICarService
 {
-    public async Task<Car> GetCarAsync(Guid userId, string modelName, CancellationToken cancellationToken = default)
-    {
-        Car car = await repository.GetCarAsync(userId, modelName, cancellationToken);
-        return car;
-    }
-
-    public async Task EnsureCarExistsAsync(Guid userId, string modelName, CancellationToken cancellationToken = default)
+    public async Task<Car> EnsureCarExistsAsync(Guid userId, string modelName, CancellationToken cancellationToken = default)
     {
         try
         {
-            await GetCarAsync(userId, modelName, cancellationToken);
+            Car car = await repository.GetCarAsync(userId, modelName, cancellationToken);
+            return car;
         }
         catch (KeyNotFoundException) //adds if it does not exist
         {
@@ -26,6 +21,7 @@ public class CarService(ICarRepository repository) : ICarService
                 UserId = userId
             };
             await repository.AddCarAsync(car, cancellationToken);
+            return car;
         }
     }
 }

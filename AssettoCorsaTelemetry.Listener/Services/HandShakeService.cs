@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using AssettoCorsaTelemetry.Dtos;
+using MassTransit;
 
 namespace AssettoCorsaTelemetry.Listener.Services
 {
@@ -12,15 +13,15 @@ namespace AssettoCorsaTelemetry.Listener.Services
     {
         public Guid SessionId { get; private set; } = Guid.NewGuid();
         
-        private readonly HttpClient _apiClient;
+        private readonly IPublishEndpoint _publishEndpoint;
         private readonly IPEndPoint _endPoint;
         private readonly UdpClient _udpClient;
         private readonly byte[] _handShakeOperationBytes;
         private readonly byte[] _subscribePhysicsOperationBytes;
 
-        public HandShakeService(IHttpClientFactory httpClientFactory, IPEndPoint endpoint, UdpClient udpClient)
+        public HandShakeService(IPublishEndpoint publishEndpoint, IPEndPoint endpoint, UdpClient udpClient)
         {
-            _apiClient = httpClientFactory.CreateClient("listener-api");
+            _publishEndpoint = publishEndpoint;
             _endPoint = endpoint;
             _udpClient = udpClient;
             
@@ -66,7 +67,11 @@ namespace AssettoCorsaTelemetry.Listener.Services
                 SessionId = Guid.NewGuid();
                 HandShakeResponse handShakeResponse = ReadResult(response);
                 SessionDto session = MapToSessionDto(handShakeResponse);
-                await _apiClient.PostAsJsonAsync("listener/session", session, cancellationToken);
+                await _publishEndpoint.Publish(new SessionReceived
+                {
+                    MessageId = Guid.NewGuid(),
+                    Data = session
+                });
                 DisplayHandshake(handShakeResponse);
 
                 Console.WriteLine();

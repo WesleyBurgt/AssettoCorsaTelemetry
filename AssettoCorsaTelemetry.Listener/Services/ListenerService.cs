@@ -4,7 +4,7 @@ using MassTransit;
 
 namespace AssettoCorsaTelemetry.Listener.Services;
 
-public class ListenerService(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint) : IHostedService
+public class ListenerService(IPublishEndpoint publishEndpoint) : IHostedService
 {
     private PhysicsDataListener? _physicsDataListener;
     
@@ -20,7 +20,7 @@ public class ListenerService(IHttpClientFactory httpClientFactory, IPublishEndpo
         IPEndPoint endpoint = new(address, acPort); 
         UdpClient udpClient = new UdpClient();
 
-        HandShakeService handShakeService = new HandShakeService(httpClientFactory, endpoint, udpClient);
+        HandShakeService handShakeService = new HandShakeService(publishEndpoint, endpoint, udpClient);
         await handShakeService.SendHandShakeRequestAsync();
 
         await handShakeService.GetHandShakeResponseAsync(cancellationToken);

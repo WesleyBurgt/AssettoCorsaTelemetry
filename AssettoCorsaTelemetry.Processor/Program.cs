@@ -30,8 +30,13 @@ builder.Services.Configure<AppSettings>(options =>
 
 builder.Services.AddScoped<AppSettings>();
 builder.Services.AddScoped<IPhysicsDataRepository, PhysicsDataRepository>();
-builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IPhysicsDataService, PhysicsDataService>();
+builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -43,6 +48,14 @@ builder.Services.AddMassTransit(x =>
             .SetConcurrencyLimit(1)
             .GroupBy<TelemetryReceived, Guid>(
                 context => context.Message.Data.SessionId));
+    });
+    
+    x.AddConsumer<SessionBatchConsumer>(cfg =>
+    {
+        cfg.Options<BatchOptions>(options => options
+            .SetMessageLimit(10)
+            .SetTimeLimit(TimeSpan.FromMilliseconds(1000))
+            .SetConcurrencyLimit(1));
     });
 
     x.UsingRabbitMq((context, cfg) =>

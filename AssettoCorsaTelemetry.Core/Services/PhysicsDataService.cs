@@ -6,7 +6,7 @@ namespace AssettoCorsaTelemetry.Core.Services;
 
 public class PhysicsDataService(IPhysicsDataRepository repository) : IPhysicsDataService
 {
-    public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<TelemetryReceived> batch, CancellationToken cancellationToken)
+    public async Task AddPhysicsDataBatchAsync(IReadOnlyCollection<TelemetryReceived> batch, CancellationToken cancellationToken = default)
     {
         if (batch.Count == 0)
             return;

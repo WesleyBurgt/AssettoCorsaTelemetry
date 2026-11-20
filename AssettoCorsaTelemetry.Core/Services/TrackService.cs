@@ -5,17 +5,12 @@ namespace AssettoCorsaTelemetry.Core.Services;
 
 public class TrackService(ITrackRepository repository) : ITrackService
 {
-    public async Task<Track> GetTrackAsync(string trackName, string trackConfig, CancellationToken cancellationToken = default)
-    {
-        Track track = await repository.GetTrackAsync(trackName, trackConfig, cancellationToken);
-        return track;
-    }
-
-    public async Task EnsureTrackExistsAsync(string trackName, string trackConfiguration, CancellationToken cancellationToken = default)
+    public async Task<Track> EnsureTrackExistsAsync(string trackName, string trackConfiguration, CancellationToken cancellationToken = default)
     {
         try
         {
-            await GetTrackAsync(trackName, trackConfiguration, cancellationToken);
+            Track track = await repository.GetTrackAsync(trackName, trackConfiguration, cancellationToken);
+            return track;
         }
         catch (KeyNotFoundException) //adds if it does not exist
         {
@@ -26,6 +21,7 @@ public class TrackService(ITrackRepository repository) : ITrackService
                 Configuration = trackConfiguration,
             };
             await repository.AddTrackAsync(track, cancellationToken);
+            return track;
         }
     }
 }

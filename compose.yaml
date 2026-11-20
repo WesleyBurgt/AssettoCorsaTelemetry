@@ -43,7 +43,6 @@ services:
       timeout: 5s
       retries: 5
       
-
   grafana:
     image: grafana/grafana:latest
     container_name: ac-telemetry-grafana
@@ -78,8 +77,6 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      backend:
-        condition: service_healthy
       
   processor:
     container_name: ac-telemetry-processor
@@ -98,26 +95,6 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
-        
-  backend:
-    image: backend
-    build:
-      context: .
-      dockerfile: AssettoCorsaTelemetry.Api/Dockerfile
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-    ports:
-      - "8080:8080"
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
 
 volumes:
   rabbitmq_data:

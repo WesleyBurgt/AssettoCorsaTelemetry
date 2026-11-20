@@ -7,19 +7,9 @@ namespace AssettoCorsaTelemetry.Dal.Repositories;
 
 public class SessionRepository(AppDbContext db) : ISessionRepository
 {
-    public async Task AddSessionAsync(Session session, CancellationToken cancellationToken = default)
+    public async Task AddSessionBatchAsync(IReadOnlyCollection<Session> session, CancellationToken cancellationToken = default)
     {
-        db.Sessions.Add(session);
+        await db.Sessions.AddRangeAsync(session, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
-    }
-    
-    public async Task<Session> GetByIdAsync(Guid sessionId, CancellationToken cancellationToken = default)
-    {
-        Session? session = await db.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId, cancellationToken);
-        if (session == null)
-        {
-            throw new KeyNotFoundException("session not found");
-        }
-        return session;
     }
 }
