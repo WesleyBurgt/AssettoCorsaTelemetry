@@ -45,7 +45,7 @@ builder.Services.AddMassTransit(x =>
         cfg.Options<BatchOptions>(options => options
             .SetMessageLimit(1000)
             .SetTimeLimit(TimeSpan.FromMilliseconds(250))
-            .SetConcurrencyLimit(1)
+            .SetConcurrencyLimit(2)
             .GroupBy<TelemetryReceived, Guid>(
                 context => context.Message.Data.SessionId));
     });

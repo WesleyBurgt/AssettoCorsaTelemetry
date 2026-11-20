@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.12" />
+      <PackageReference Include="NBomber" Version="6.7.1" />
+      <PackageReference Include="NBomber.AMQP" Version="0.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AssettoCorsaTelemetry.Dtos\AssettoCorsaTelemetry.Dtos.csproj" />
+    </ItemGroup>
+
+</Project>

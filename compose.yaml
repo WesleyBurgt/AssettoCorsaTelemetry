@@ -95,6 +95,20 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+        
+  benchmarks:
+    container_name: ac-telemetry-benchmarks
+    build:
+      context: .
+      dockerfile: AssettoCorsaTelemetry.Benchmarks/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   rabbitmq_data:
