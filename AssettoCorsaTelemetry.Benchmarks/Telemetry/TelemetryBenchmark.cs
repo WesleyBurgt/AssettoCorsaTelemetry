@@ -9,6 +9,7 @@ public class TelemetryBenchmark(IBusControl bus, TelemetryBenchmarkSettings sett
     public async Task RunAsync()
     {
         await bus.StartAsync();
+        var sessionId = Guid.NewGuid();
 
         try
         {
@@ -18,7 +19,7 @@ public class TelemetryBenchmark(IBusControl bus, TelemetryBenchmarkSettings sett
                     {
                         try
                         {
-                            var telemetry = TelemetryFactory.Create();
+                            var telemetry = TelemetryFactory.Create(sessionId);
 
                             await bus.Publish(telemetry);
 
